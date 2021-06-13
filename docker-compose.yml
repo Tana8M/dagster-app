@@ -1,0 +1,97 @@
+version: "3.7"
+
+services:
+  docker-postgresql:
+    image: postgres:11
+    container_name: docker-postgresql
+    environment:
+      POSTGRES_USER: "pod"
+      POSTGRES_PASSWORD: "password"
+      POSTGRES_DB: "podpoint"
+    ports: 
+      - "5432:5432"
+    networks:
+      - docker-network
+
+  docker-internal:
+    build:
+      context: .
+      dockerfile: ./internal.dockerfile
+    container_name: docker-internal
+    image: docker-internal 
+    environment:
+      DAGSTER_POSTGRES_HOSTNAME: "docker-postgresql"
+      DAGSTER_POSTGRES_USER: "pod"
+      DAGSTER_POSTGRES_PASSWORD: "password"
+      DAGSTER_POSTGRES_DB: "podpoint"
+      DAGSTER_CURRENT_IMAGE: "docker-internal"
+    volumes: 
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./src/internal:/opt/dagster/internal
+    networks:
+      - docker-network
+
+  docker-dagit:
+    build:
+      context: .
+      dockerfile: ./dagster.dockerfile
+    container_name: docker-dagit
+    restart: on-failure
+    entrypoint:
+      - dagit
+      - -h
+      - "0.0.0.0"
+      - -p
+      - "3000"
+      - -w
+      - workspace.yaml
+    expose:
+      - "3000"
+    ports:
+      - "3000:3000"
+    environment:
+      DAGSTER_POSTGRES_HOSTNAME: "docker-postgresql"
+      DAGSTER_POSTGRES_USER: "pod"
+      DAGSTER_POSTGRES_PASSWORD: "password"
+      DAGSTER_POSTGRES_DB: "podpoint"
+      HOSTNAME_INTERNAL: "docker-internal"
+      DAGSTER_NETWORK: "docker-network" # Variable needs to be written as container DNS name in ECS
+    volumes: 
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - docker-network
+    depends_on:
+      - docker-internal
+      - docker-postgresql
+
+  docker-daemon:
+    build:
+      context: .
+      dockerfile: ./dagster.dockerfile
+    container_name: docker-daemon
+    restart: on-failure
+    entrypoint:
+      - dagster-daemon
+      - run
+    environment:
+      DAGSTER_POSTGRES_HOSTNAME: "docker-postgresql"
+      DAGSTER_POSTGRES_USER: "pod"
+      DAGSTER_POSTGRES_PASSWORD: "password"
+      DAGSTER_POSTGRES_DB: "podpoint"
+      HOSTNAME_INTERNAL: "docker-internal"
+      DAGSTER_NETWORK: "docker-network" # Variable needs to be written as container DNS name in ECS
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+      AWS_REGION: ${AWS_REGION}
+    volumes: 
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - docker-network
+    depends_on:
+      - docker-internal
+      - docker-postgresql
+
+networks:
+  docker-network:
+    driver: bridge
+    name: "docker-network"

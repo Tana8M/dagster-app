@@ -1,0 +1,12 @@
+# Ignore cache
+**/__pycache__
+**/.pytest_cache
+
+# Ignore env
+**/env
+
+# Ignore test dirs
+**/tests
+
+# Ignore makefiles
+**/Makefile

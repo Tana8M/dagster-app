@@ -1,0 +1,5 @@
+# Install package in editable mode inside container
+-e .
+
+# Other dependencies from pypi
+s3fs==2021.5.0
