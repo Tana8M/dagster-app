@@ -2,6 +2,6 @@ load_from:
   # Each entry here corresponds to a service in the docker-compose file that exposes pipelines.
   - grpc_server:
       host:
-        env: HOSTNAME_INTERNAL
+        env: HOSTNAME_etl
       port: 4000
-      location_name: "server_internal"
+      location_name: "server_etl"

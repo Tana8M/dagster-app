@@ -1,5 +1,5 @@
 from dagster import execute_pipeline
-from internal.pipelines.my_pipeline import my_pipeline
+from etl.pipelines.my_pipeline import my_pipeline
 
 
 def test_my_pipeline():

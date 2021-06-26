@@ -5,11 +5,11 @@ import os
 version = os.getenv("DAGSTER_VERSION", "0.11.11")
 
 setuptools.setup(
-    name="internal",
+    name="etl",
     version="0.0.1",
     author_email="tiri.georgiou@pod-point.com",
     packages=setuptools.find_packages(
-        include=['internal'], exclude=["tests"]),
+        include=['etl'], exclude=["tests"]),
     install_requires=[
         f"dagster=={version}",
         f"dagster-aws=={version}",

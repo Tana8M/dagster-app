@@ -1,6 +1,6 @@
 from dagster import ModeDefinition, pipeline
 from dagster_aws.s3 import s3_resource
-from internal.solids.hello import hello, read_from_s3
+from etl.solids.hello import hello, read_from_s3
 
 # Mode definitions allow you to configure the behavior of your pipelines and solids at execution
 # time. For hints on creating modes in Dagster, see our documentation overview on Modes and

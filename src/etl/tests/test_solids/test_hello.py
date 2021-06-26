@@ -1,6 +1,6 @@
 from dagster import execute_solid
-from internal.pipelines.my_pipeline import MODE_TEST
-from internal.solids.hello import hello
+from etl.pipelines.my_pipeline import MODE_TEST
+from etl.solids.hello import hello
 
 
 def test_hello():

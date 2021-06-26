@@ -21,15 +21,15 @@ COPY dagster.yaml $DAGSTER_HOME
 
 # Add repository code
 
-WORKDIR /opt/dagster/internal
+WORKDIR /opt/dagster/etl
 
-# Copy the internal repo 
+# Copy the etl repo 
 
-COPY src/internal .
+COPY src/etl .
 
 # RUN install pip requirements
 
-RUN pip install -r requirements-internal.txt
+RUN pip install -r requirements-etl.txt
 
 # Run dagster gRPC server on port 4000
 
@@ -38,4 +38,4 @@ EXPOSE 4000
 # CMD allows this to be overridden from run launchers or executors that want
 # to run other commands against your repository
 
-CMD ["dagster", "api", "grpc", "-h", "0.0.0.0", "-p", "4000", "-f", "./internal/repository.py"]
+CMD ["dagster", "api", "grpc", "-h", "0.0.0.0", "-p", "4000", "-f", "./etl/repository.py"]

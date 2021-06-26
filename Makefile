@@ -1,46 +1,46 @@
 # Setting up for development
 
-.PHONY: help dev-ml dev-internal build-docker rmi rinternal stop-docker start-docker clean-cache clean-env clean-containers clean deploy-ml deploy-internal deploy-external deploy-daemon-dagit deploy-pipe
+.PHONY: help dev-ml dev-etl build-docker rmi retl stop-docker start-docker clean-cache clean-env clean-containers clean deploy-ml deploy-etl deploy-external deploy-daemon-dagit deploy-pipe
 
 # ENV NAMES
-VENV_INTERNAL_NAME?=env_internal
+VENV_etl_NAME?=env_etl
 
 # TARGET FILES
-VENV_ACTIVATE_INTERNAL?=${VENV_INTERNAL_NAME}/bin/activate
+VENV_ACTIVATE_etl?=${VENV_etl_NAME}/bin/activate
 
 # PYTHON INTERPRETORS OF VENV
-PYTHON_INTERNAL:=${VENV_INTERNAL_NAME}/bin/python3
+PYTHON_etl:=${VENV_etl_NAME}/bin/python3
 
 # -------- HELP DOCS ------- #
 
 help:
 	@echo "make clean :: remove all builds, env, cached bin files."
 	@echo "make dev-ml :: prepares a development environment from docker containers for ml package."
-	@echo "make dev-internal :: prepares a development environment from docker containers for internal package."
+	@echo "make dev-etl :: prepares a development environment from docker containers for etl package."
 	@echo "make dev-external :: prepares a development environment from docker containers for external package."
-	@echo "make rinternal :: refreshes the container docker-internal for live development. Use this after saving your code to check for changes in dagit UI."
+	@echo "make retl :: refreshes the container docker-etl for live development. Use this after saving your code to check for changes in dagit UI."
 	@echo "make stop-docker :: stops running docker containers and removes volumes attached. Use this once finished developing and want to return without rebuilding all containers."
 	@echo "make start-docker :: used after make stop-docker to restart built containers. Much faster to get environments loaded than doing a clean rebuild with dev-*."
 	@echo "make clean :: removes all cache files, virtual environments, stops contains and removes images associated in the docker-compose.yml"
 
 # ----------- DEVELOPING SHORTCUTS ---------- #
 
-# DEVELOPMENT FOR INTERNAL PACKAGE
-$(VENV_ACTIVATE_INTERNAL): src/internal/requirements-internal.txt src/internal/setup.py
-	python -m venv $(VENV_INTERNAL_NAME)
-	$(PYTHON_INTERNAL) -m pip install -U pip
-	$(PYTHON_INTERNAL) -m pip install -r | grep -v '\-e' $<
-	$(PYTHON_INTERNAL) -m pip install -e src/internal/.
+# DEVELOPMENT FOR etl PACKAGE
+$(VENV_ACTIVATE_etl): src/etl/requirements-etl.txt src/etl/setup.py
+	python -m venv $(VENV_etl_NAME)
+	$(PYTHON_etl) -m pip install -U pip
+	$(PYTHON_etl) -m pip install -r | grep -v '\-e' $<
+	$(PYTHON_etl) -m pip install -e src/etl/.
 
 
-dev-internal: $(VENV_ACTIVATE_INTERNAL) build-docker
+dev-etl: $(VENV_ACTIVATE_etl) build-docker
 
 # ----------- DOCKER COMPOSE ----------- #
 build-docker: 
 	docker-compose -f docker-compose.yml up --build --no-recreate -d 
 
-rinternal:
-	docker-compose -f docker-compose.yml restart -t 3 docker-internal
+retl:
+	docker-compose -f docker-compose.yml restart -t 3 docker-etl
 
 stop-docker:
 	docker-compose -f docker-compose.yml down -v 
@@ -50,8 +50,8 @@ start-docker:
 
 # --------------- TESTING ------------------ #
 
-test-internal: $(VENV_ACTIVATE_INTERNAL)
-	$(PYTHON_INTERNAL) -m pytest -v src/internal/tests
+test-etl: $(VENV_ACTIVATE_etl)
+	$(PYTHON_etl) -m pytest -v src/etl/tests
 
 # -------------- CLEAN UP ---------------- #
 
@@ -61,7 +61,7 @@ clean-cache:
 	rm -rf .mypy_cache
 
 clean-env:
-ifneq ($(wildcard $(VENV_INTERNAL_NAME)),)
+ifneq ($(wildcard $(VENV_etl_NAME)),)
 	rm -rf $(VENV_ML_NAME)
 endif
 
