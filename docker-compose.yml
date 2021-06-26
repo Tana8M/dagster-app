@@ -80,9 +80,6 @@ services:
       DAGSTER_POSTGRES_DB: "podpoint"
       HOSTNAME_etl: "docker-etl"
       DAGSTER_NETWORK: "docker-network" # Variable needs to be written as container DNS name in ECS
-      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
-      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
-      AWS_REGION: ${AWS_REGION}
     volumes: 
       - /var/run/docker.sock:/var/run/docker.sock
     networks:
