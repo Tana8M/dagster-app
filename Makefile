@@ -62,7 +62,7 @@ clean-cache:
 
 clean-env:
 ifneq ($(wildcard $(VENV_etl_NAME)),)
-	rm -rf $(VENV_ML_NAME)
+	rm -rf ${VENV_etl_NAME}
 endif
 
 clean-containers:
