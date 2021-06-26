@@ -2,6 +2,22 @@
 # Created by https://www.toptal.com/developers/gitignore/api/python
 # Edit at https://www.toptal.com/developers/gitignore?templates=python
 
+## Terraform ##
+
+# Ignore state files
+.terraform*
+terraform.tfstate*
+
+# logs
+*.log
+
+# cache
+.DS_Store
+
+# Pem key
+*.pem
+
+
 ### Python ###
 # Byte-compiled / optimized / DLL files
 __pycache__/
