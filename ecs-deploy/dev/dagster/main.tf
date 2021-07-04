@@ -86,6 +86,8 @@ module "ecs_dagster" {
   // CLUSTER
   ecs_dagster_cluster  = var.ecs_dagster_cluster
   dagit_container_port = var.dagit_container_port
+  cpu = var.cpu
+  memory = var.memory
   key_name             = var.key_name
   // CLOUDWATCH LOGS
   aws_cloudwatch_log_group = var.aws_cloudwatch_log_group
