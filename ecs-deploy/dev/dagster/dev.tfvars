@@ -9,6 +9,8 @@ dagit_container_port = "3000"
 aws_cloudwatch_log_group = "awslogs-dagster"
 # AUTOSCALING GROUP
 launch_template_instance_type  = "t2.micro"
+cpu = 500
+memory = 700
 protect_from_scale_in          = false
 managed_termination_protection = "DISABLED"
 target_capacity                = 100
