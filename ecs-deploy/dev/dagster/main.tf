@@ -74,7 +74,7 @@ data "aws_subnet_ids" "private" {
 ##################################
 
 module "ecs_dagster" {
-  source = "../../modules/ecs-dagster"
+  source = "../../modules/dagster"
   // TAGS
   infra_env  = var.infra_env
   infra_role = var.infra_role
@@ -134,7 +134,7 @@ module "rds_postgres" {
 ####################################
 
 module "load_balancer" {
-  source = "../../modules/lb"
+  source = "../../modules/loadbalancer"
   // TAGS
   infra_env  = var.infra_env
   infra_role = var.infra_role
