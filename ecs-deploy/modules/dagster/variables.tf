@@ -59,6 +59,16 @@ variable "key_name" {
   description = "key pair name to ssh."
 }
 
+variable "cpu" {
+  type = number
+  description = "Amount of cpu allocated to task."
+}
+
+variable "memory" {
+  type = number
+  description = "Amount of memory allocated to task."
+}
+
 ##################################################
 // ------------ AUTOSCALING GROUP ------------- //
 ##################################################

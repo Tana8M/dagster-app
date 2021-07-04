@@ -28,6 +28,16 @@ variable "dagit_container_port" {
   default     = "3000"
 }
 
+variable "cpu" {
+  type = number
+  description = "Amount of cpu allocated to task."
+}
+
+variable "memory" {
+  type = number
+  description = "Amount of memory allocated to task."
+}
+
 variable "key_name" {
   type        = string
   description = "key pair name to ssh."

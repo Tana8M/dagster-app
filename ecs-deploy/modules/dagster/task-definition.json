@@ -2,8 +2,6 @@
     {
         "name": "dagit",
         "image": "${dagit-image}",
-        "cpu": 100,
-        "memory": 128,
         "essential": true,
         "portMappings": [
             {
@@ -26,7 +24,7 @@
             },
             {
                 "name": "DAGSTER_POSTGRES_USER",
-                "value": "user"
+                "value": "test_user"
             },
             {
                 "name": "DAGSTER_POSTGRES_PASSWORD",
@@ -38,7 +36,11 @@
             },
             {
                 "name": "HOSTNAME_etl",
-                "value": "etl"
+                "value": "localhost"
+            },
+            {
+                "name": "DAGSTER_NETWORK",
+                "value": "$(tail -1 /etc/hosts | awk '{ print $1 }')"
             }
         ],
         "entryPoint": [
@@ -53,7 +55,7 @@
         "mountPoints": [
             {
                 "sourceVolume": "docker_sock",
-                "containerPath": "/var/run/docker.sock",
+                "containerPath": "//var/run/docker.sock",
                 "readOnly": true
             }
         ]
@@ -61,8 +63,6 @@
     {
         "name": "daemon",
         "image": "${daemon-image}",
-        "cpu": 100,
-        "memory": 128,
         "essential": true,
         "logConfiguration": {
             "logDriver": "awslogs",
@@ -79,7 +79,7 @@
             },
             {
                 "name": "DAGSTER_POSTGRES_USER",
-                "value": "user"
+                "value": "test_user"
             },
             {
                 "name": "DAGSTER_POSTGRES_PASSWORD",
@@ -91,7 +91,11 @@
             },
             {
                 "name": "HOSTNAME_etl",
-                "value": "etl"
+                "value": "localhost"
+            },
+            {
+                "name": "DAGSTER_NETWORK",
+                "value": "$(tail -1 /etc/hosts | awk '{ print $1 }')"
             }
         ],
         "entryPoint": [
@@ -101,7 +105,7 @@
         "mountPoints": [
             {
                 "sourceVolume": "docker_sock",
-                "containerPath": "/var/run/docker.sock",
+                "containerPath": "//var/run/docker.sock",
                 "readOnly": true
             }
         ]
@@ -109,8 +113,7 @@
     {
         "name": "etl",
         "image": "${etl-image}",
-        "cpu": 100,
-        "memory": 128,
+        "hostname": "etl",
         "essential": false,
         "portMappings": [
             {
@@ -133,7 +136,7 @@
             },
             {
                 "name": "DAGSTER_POSTGRES_USER",
-                "value": "user"
+                "value": "test_user"
             },
             {
                 "name": "DAGSTER_POSTGRES_PASSWORD",
@@ -145,13 +148,17 @@
             },
             {
                 "name": "DAGSTER_CURRENT_IMAGE",
-                "value": "${ml-image}"
+                "value": "$(echo ${ECS_CONTAINER_METADATA_URI_V4} | python3 -c 'import json,sys;obj=json.load(sys.stdin);print(obj['Image'])')"
+            },
+            {
+                "name": "DAGSTER_NETWORK",
+                "value": "$(tail -1 /etc/hosts | awk '{ print $1 }')"
             }
         ],
         "mountPoints": [
             {
                 "sourceVolume": "docker_sock",
-                "containerPath": "/var/run/docker.sock",
+                "containerPath": "//var/run/docker.sock",
                 "readOnly": true
             }
         ]

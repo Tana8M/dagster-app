@@ -18,6 +18,10 @@ resource "aws_ecs_cluster" "dagster" {
 // ------- Autoscaling capacity provider -------- //
 ####################################################
 
+locals {
+  env = "staging"
+}
+
 resource "aws_ecs_capacity_provider" "dagster_cp" {
   name = "${var.infra_role}-cp-${local.env}"
 
@@ -57,11 +61,13 @@ resource "aws_ecs_task_definition" "dagster_task" {
   family                = "${var.infra_role}-ecs-task"
   task_role_arn         = aws_iam_role.task.arn
   execution_role_arn    = aws_iam_role.task_execution.arn
-  network_mode          = "bridge"
+  cpu = var.cpu
+  memory = var.memory
+  network_mode          = "awsvpc"
   container_definitions = data.template_file.task_definition.rendered
   volume {
     name      = "docker_sock"
-    host_path = "/var/run/docker.sock"
+    host_path = "//var/run/docker.sock"
   }
 }
 
@@ -74,6 +80,12 @@ resource "aws_ecs_service" "dagster" {
   cluster         = aws_ecs_cluster.dagster.id
   task_definition = aws_ecs_task_definition.dagster_task.arn
   desired_count   = 1
+  network_configuration {
+    // Must be on private 
+    subnets         = var.subnet_private_ids
+    security_groups = [var.sg_ecs_tasks]
+  }
+
   load_balancer {
     target_group_arn = var.lb_target_group_arn
     container_name   = "dagit"

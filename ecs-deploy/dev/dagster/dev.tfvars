@@ -18,5 +18,5 @@ rds_allocated_storage     = 10
 rds_max_allocated_storage = 30
 rds_engine_version        = "13.1"
 rds_db_name               = "dagsterdb"
-rds_username              = "user"
+rds_username              = "test_user"
 skip_final_snapshot       = true
