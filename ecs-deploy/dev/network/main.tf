@@ -1,11 +1,6 @@
-######################################
-// ------- NETWORK CONFIGS -------- //
-######################################
-
-locals {
-  // Overwrite this section as required.
-  region = "eu-west-1"
-}
+###############################
+// ------- TF CONFIG-------- //
+###############################
 
 terraform {
   required_providers {
@@ -14,21 +9,34 @@ terraform {
       version = "~> 3.0"
     }
   }
+}
 
-  backend "s3" {
-    bucket = "terraform-dagster-tutorial"
-    key    = "dev-dagster"
-    region = local.region
+provider "aws" {
+  region = "eu-west-1"
+
+  default_tags {
+    tags = {
+      Name        = "data-network"
+      ManagedBy   = "terraform"
+      Environment = "staging"
+    }
   }
 }
 
-########################################
-// ------- NETWORK RESOURCES -------- //
-########################################
+#############################
+// ------- NETWORK-------- //
+#############################
 
 
-module "vpc" {
-  source  = "terraform-aws-modules/vpc/aws"
-  version = "3.1.0"
-  # insert the 18 required variables here
+module "network" {
+  source = "../../modules/network"
+  // TAGS
+  infra_env = var.infra_env
+  // NETWORK
+  vpc_cidr_block     = var.vpc_cidr_block
+  private_subnets    = var.private_subnets
+  public_subnets     = var.public_subnets
+  availability_zones = var.availability_zones
+  // CLUSTER
+  dagit_container_port = var.dagit_container_port
 }
